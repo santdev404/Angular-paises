@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ChildActivationStart } from '@angular/router';
+import { Country } from '../../interfaces/pais.interface';
 import { PaisService } from '../../services/pais.service';
 
 @Component({
@@ -9,6 +11,8 @@ import { PaisService } from '../../services/pais.service';
 export class PorPaisComponent implements OnInit {
 
   termino:string = "Hello";
+  hayError:boolean = false;
+  paises:Country[] = [];
 
   constructor(
     private _paisSerive: PaisService
@@ -18,11 +22,14 @@ export class PorPaisComponent implements OnInit {
   }
 
   buscar(){
+    this.hayError = false;
     this._paisSerive.buscarPais(this.termino).subscribe(
-      response =>{
-        console.log(response);
-      }, error =>{
-        console.log(error);
+      (paises) =>{
+        this.paises = paises;
+
+      }, (error) =>{
+        this.paises = [];
+        this.hayError = true;
       }
     );
   }
