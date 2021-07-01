@@ -1,7 +1,7 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 
 import { Country } from '../interfaces/pais.interface';
 
@@ -17,13 +17,18 @@ export class PaisService {
 
   }
 
+  get httpParams(){
+    return  new HttpParams()
+    .set('fields', 'name;capital;alpha2Code;flag;population')
+  }
+
 
 
   buscarPais(termino:string): Observable<Country[]>{
 
     const  url = `${this.apiUrl}/name/${termino}`;
 
-    return this._http.get<Country[]>(url);
+    return this._http.get<Country[]>(url, {params: this.httpParams });
 
     // return this._http.get(url).pipe(
     //   catchError(err=> of([]))
@@ -35,7 +40,7 @@ export class PaisService {
 
     const  url = `${this.apiUrl}/capital/${termino}`;
 
-    return this._http.get<Country[]>(url);
+    return this._http.get<Country[]>(url, {params: this.httpParams });
 
   }
 
@@ -44,6 +49,19 @@ export class PaisService {
     const  url = `${this.apiUrl}/alpha/${termino}`;
 
     return this._http.get<Country>(url);
+
+  }
+
+  getPaisPorRegion(region:string): Observable<Country[]>{
+
+    
+
+    const  url = `${this.apiUrl}/region/${region}`;
+
+    return this._http.get<Country[]>(url,{params: this.httpParams })
+      .pipe(
+        tap(console.log)
+      );
 
   }
 
